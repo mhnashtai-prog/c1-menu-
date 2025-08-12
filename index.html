@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,11 +34,21 @@ body {
   max-width: 1000px;
   width: 94%;
   padding: 20px;
+  position: relative;
 }
-.header { text-align: center; margin-bottom: 15px; }
+.header { text-align: center; margin-bottom: 15px; position: relative; }
 .main-title { font-size: 2em; font-family: var(--title-font); font-weight: 700; }
 .subtitle { font-size: 1em; color: #aaa; }
 .creator { font-size: 1em; color: #aaa; }
+.test-number {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.8em;
+  font-weight: 700;
+  color: var(--lettuce);
+  display: none;
+}
 .menu {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -61,8 +72,6 @@ body {
   flex-wrap: wrap;
   justify-content: center;
 }
-/* Option button default */
-/* For test view we’ll make them smaller via .test-view below */
 .option {
   background: #444;
   border: none;
@@ -103,16 +112,17 @@ body {
   border-radius: 10px;
 }
 .nav-buttons button:hover { background: #333; }
-
-/* Layout for options in test view on small screens */
+/* Test view: maximised black space */
 .test-view .option {
-  flex: 1 1 calc(38% - 8px); /* narrower width */
-  padding: 5px 4px; /* less height */
-  font-size: 0.85em;
+  flex: 1 1 calc(30% - 8px); /* narrow */
+  padding: 4px 3px;          /* short */
+  font-size: 0.8em;
 }
-/* On larger screens, 4 across in test view */
 @media (min-width: 701px) {
-  .test-view .option { flex: 1 1 calc(22% - 8px); }
+  .test-view .option {
+    flex: 1 1 calc(18% - 8px);
+    padding: 3px 3px;
+  }
 }
 </style>
 </head>
@@ -122,6 +132,7 @@ body {
     <div class="main-title">AT A GLANCE</div>
     <div class="subtitle">Language Generator</div>
     <div class="creator" id="creatorName">Majid Nashtai</div>
+    <div class="test-number" id="testNumber"></div>
   </div>
   <div class="menu" id="menu"></div>
   <div class="exercise-area" id="exerciseArea"></div>
@@ -133,6 +144,7 @@ body {
     <button id="nextBtn" onclick="nextTest()">NEXT</button>
   </div>
 </div>
+
 <script>
 const testGroups = [
   { title:"Mixed Advanced Practice – Group 1", questions:[
@@ -438,7 +450,7 @@ const testGroups = [
 let currentTest = null;
 let selections = [];
 
-/* Show Menu Page */
+/* Menu Page */
 function initMenu(){
   document.body.classList.remove('test-view');
   document.body.classList.add('menu-view');
@@ -450,13 +462,14 @@ function initMenu(){
   document.getElementById('submitBtn').style.display='none';
   document.getElementById('score').style.display='none';
 
-  // Hide the nav buttons on menu page
+  // Hide nav buttons in menu
   document.getElementById('menuBtn').style.display = 'none';
   document.getElementById('repeatBtn').style.display = 'none';
   document.getElementById('nextBtn').style.display = 'none';
 
-  // Show creator name only here
+  // Show creator name, hide test number
   document.getElementById('creatorName').style.display = 'block';
+  document.getElementById('testNumber').style.display = 'none';
 
   testGroups.forEach((g,i)=>{
     const btn = document.createElement('button');
@@ -466,7 +479,7 @@ function initMenu(){
   });
 }
 
-/* Show a Test Page */
+/* Test Page */
 function showTest(idx){
   document.body.classList.remove('menu-view');
   document.body.classList.add('test-view');
@@ -477,13 +490,15 @@ function showTest(idx){
   area.innerHTML='';
   document.getElementById('menu').style.display='none';
 
-  // Show nav buttons again
+  // Show nav buttons in test
   document.getElementById('menuBtn').style.display = 'inline-block';
   document.getElementById('repeatBtn').style.display = 'inline-block';
   document.getElementById('nextBtn').style.display = 'inline-block';
 
-  // Hide creator name in tests
+  // Hide creator name, show test number
   document.getElementById('creatorName').style.display = 'none';
+  document.getElementById('testNumber').textContent = `TEST ${idx+1}`;
+  document.getElementById('testNumber').style.display = 'block';
 
   testGroups[idx].questions.forEach((q,qi)=>{
     const qBlock = document.createElement('div');
@@ -492,7 +507,6 @@ function showTest(idx){
     qText.textContent = `${qi+1}. ${q.q}`;
     qBlock.appendChild(qText);
 
-    // shuffle options
     const shuffled = q.opts.map((opt,j)=>({opt,idx:j})).sort(()=>Math.random()-0.5);
     const optsDiv = document.createElement('div');
     optsDiv.className = 'options';
@@ -512,7 +526,6 @@ function showTest(idx){
   document.getElementById('score').style.display='none';
 }
 
-/* Select Option */
 function selectOption(qi,oi,btn){
   selections[qi]=oi;
   const btns = btn.parentNode.querySelectorAll('.option');
@@ -520,7 +533,6 @@ function selectOption(qi,oi,btn){
   btn.classList.add('selected');
 }
 
-/* Grade the test */
 function submitAnswers(){
   let correct=0;
   const qBlocks = document.getElementsByClassName('question-block');
@@ -541,15 +553,12 @@ function submitAnswers(){
   document.getElementById('score').style.display='block';
 }
 
-/* Repeat and Next */
 function repeatTest(){ showTest(currentTest); }
 function nextTest(){ showTest((currentTest+1)%testGroups.length); }
 
-/* Events */
 document.getElementById('submitBtn').onclick=submitAnswers;
 document.getElementById('menuBtn').onclick=initMenu;
 
-/* Init */
 initMenu();
 </script>
 </body>
