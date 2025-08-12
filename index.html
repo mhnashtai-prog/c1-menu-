@@ -495,5 +495,41 @@ function showTest(idx){
   document.querySelector('.subtitle').textContent = 'Language Generator';
   document.getElementById('creatorName').style.display = 'none';
 }
+function selectOption(qi,oi,btn){
+  selections[qi]=oi;
+  const btns = btn.parentNode.querySelectorAll('.option');
+  btns.forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
 
+function submitAnswers(){
+  let correct=0;
+  const qBlocks = document.getElementsByClassName('question-block');
+  testGroups[currentTest].questions.forEach((q,qi)=>{
+    const btns = qBlocks[qi].querySelectorAll('.option');
+    btns.forEach(b=>{
+      const correctOpt = q.opts[q.ans];
+      if(b.textContent===correctOpt) b.classList.add('correct');
+      if(selections[qi]!==undefined && b.textContent===q.opts[selections[qi]] && b.textContent!==correctOpt){
+        b.classList.add('wrong');
+      }
+      b.disabled=true;
+    });
+    if(selections[qi]!==undefined && q.opts[selections[qi]]===q.opts[q.ans]) correct++;
+  });
+  document.getElementById('score').textContent =
+    `Score: ${correct}/${testGroups[currentTest].questions.length} (${Math.round(correct/testGroups[currentTest].questions.length*100)}%)`;
+  document.getElementById('score').style.display='block';
+}
+
+function repeatTest(){ showTest(currentTest); }
+function nextTest(){ showTest((currentTest+1)%testGroups.length); }
+
+document.getElementById('submitBtn').onclick=submitAnswers;
+document.getElementById('menuBtn').onclick=initMenu;
+
+initMenu();
+</script>
+</body>
+</html>
 
