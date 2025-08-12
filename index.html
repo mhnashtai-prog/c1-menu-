@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,6 +50,8 @@ body {
   color: var(--lettuce);
   display: none;
 }
+
+/* Menu grid */
 .menu {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -66,27 +69,34 @@ body {
 .menu button:hover { background: var(--btn-hover); }
 
 .exercise-area { max-height: 60vh; overflow-y: auto; padding-right: 10px; }
+
+/* Unified grid for question + options */
 .question-block {
-  display: grid;                      /* unified grid for question & options */
-  grid-template-columns: 1fr auto auto auto auto; /* col1: question, col2-5: options */
+  display: grid;
+  grid-template-columns: 1fr auto auto auto auto; /* question + 4 fixed option cols */
   align-items: center;
   column-gap: 30px;
   row-gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  padding-right: 40px; /* breathing room on right */
 }
+
+/* Options behave as grid children */
 .options {
-  display: contents;                  /* let .option buttons fill the parent grid cols */
+  display: contents;
 }
+
+/* Grey buttons */
 .option {
   background: var(--light-grey);
   border: none;
   color: #fff;
   border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.9em;
   text-align: center;
   cursor: pointer;
   white-space: nowrap;
-  padding: 6px 10px;
-  font-size: 0.9em;
 }
 .option.selected { border: 2px solid var(--lettuce); }
 .option.correct { background: var(--lettuce); color: #000; }
@@ -103,6 +113,7 @@ body {
   cursor: pointer;
   border-radius: 15px;
 }
+
 .score {
   text-align: center;
   font-size: 1.2em;
@@ -110,6 +121,7 @@ body {
   margin-top: 10px;
   display: none;
 }
+
 .nav-buttons { text-align: center; margin-top: 15px; }
 .nav-buttons button {
   background: #262626;
@@ -125,7 +137,7 @@ body {
 </head>
 <body class="menu-view">
 <div class="layer-2">
-  <div class="header" id="header">
+  <div class="header">
     <div class="main-title">AT A GLANCE</div>
     <div class="subtitle">Language Generator</div>
     <div class="creator" id="creatorName">Majid Nashtai</div>
@@ -135,7 +147,7 @@ body {
   <div class="exercise-area" id="exerciseArea"></div>
   <button class="submit-btn" id="submitBtn" style="display:none;">SUBMIT</button>
   <div class="score" id="score"></div>
-  <div class="nav-buttons" id="navBtns">
+  <div class="nav-buttons">
     <button id="menuBtn">MENU</button>
     <button id="repeatBtn" onclick="repeatTest()">REPEAT</button>
     <button id="nextBtn" onclick="nextTest()">NEXT</button>
@@ -449,17 +461,20 @@ let selections = [];
 function initMenu(){
   document.body.classList.remove('test-view');
   document.body.classList.add('menu-view');
+
   const menu = document.getElementById('menu');
   menu.style.display='grid';
   menu.innerHTML='';
   document.getElementById('exerciseArea').innerHTML='';
   document.getElementById('submitBtn').style.display='none';
   document.getElementById('score').style.display='none';
+
   document.getElementById('menuBtn').style.display = 'none';
   document.getElementById('repeatBtn').style.display = 'none';
   document.getElementById('nextBtn').style.display = 'none';
   document.getElementById('creatorName').style.display = 'block';
   document.getElementById('testNumber').style.display = 'none';
+
   testGroups.forEach((g,i)=>{
     const btn = document.createElement('button');
     btn.textContent = `TEST ${i+1}`;
@@ -471,11 +486,14 @@ function initMenu(){
 function showTest(idx){
   document.body.classList.remove('menu-view');
   document.body.classList.add('test-view');
+
   currentTest = idx;
   selections = [];
+
   const area = document.getElementById('exerciseArea');
   area.innerHTML='';
   document.getElementById('menu').style.display='none';
+
   document.getElementById('menuBtn').style.display = 'inline-block';
   document.getElementById('repeatBtn').style.display = 'inline-block';
   document.getElementById('nextBtn').style.display = 'inline-block';
@@ -483,22 +501,26 @@ function showTest(idx){
   document.getElementById('testNumber').textContent = `TEST ${idx+1}`;
   document.getElementById('testNumber').style.display = 'block';
 
-  // Build questions with aligned columns
+  // Build question blocks without shuffling (fixed columns)
   testGroups[idx].questions.forEach((q,qi)=>{
     const qBlock = document.createElement('div');
     qBlock.className = 'question-block';
+
     const qText = document.createElement('div');
     qText.textContent = `${qi+1}. ${q.q}`;
     qBlock.appendChild(qText);
+
     const optsDiv = document.createElement('div');
     optsDiv.className = 'options';
+
     q.opts.forEach((opt,oi)=>{
       const ob = document.createElement('button');
-      ob.className='option';
+      ob.className = 'option';
       ob.textContent = opt;
-      ob.onclick=()=>selectOption(qi,oi,ob);
+      ob.onclick = ()=>selectOption(qi,oi,ob);
       optsDiv.appendChild(ob);
     });
+
     qBlock.appendChild(optsDiv);
     area.appendChild(qBlock);
   });
@@ -517,6 +539,7 @@ function selectOption(qi,oi,btn){
 function submitAnswers(){
   let correct=0;
   const qBlocks = document.getElementsByClassName('question-block');
+
   testGroups[currentTest].questions.forEach((q,qi)=>{
     const btns = qBlocks[qi].querySelectorAll('.option');
     btns.forEach((b,bi)=>{
@@ -526,6 +549,7 @@ function submitAnswers(){
     });
     if(selections[qi] === q.ans) correct++;
   });
+
   document.getElementById('score').textContent =
     `Score: ${correct}/${testGroups[currentTest].questions.length} (${Math.round(correct/testGroups[currentTest].questions.length*100)}%)`;
   document.getElementById('score').style.display='block';
@@ -534,8 +558,8 @@ function submitAnswers(){
 function repeatTest(){ showTest(currentTest); }
 function nextTest(){ showTest((currentTest+1)%testGroups.length); }
 
-document.getElementById('submitBtn').onclick=submitAnswers;
-document.getElementById('menuBtn').onclick=initMenu;
+document.getElementById('submitBtn').onclick = submitAnswers;
+document.getElementById('menuBtn').onclick = initMenu;
 
 initMenu();
 </script>
