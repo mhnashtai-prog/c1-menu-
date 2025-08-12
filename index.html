@@ -61,16 +61,15 @@ body {
   flex-wrap: wrap;
   justify-content: center;
 }
+/* Option button default */
+/* For test view we’ll make them smaller via .test-view below */
 .option {
-  flex: 1 1 calc(45% - 8px);
   background: #444;
   border: none;
   color: #fff;
-  padding: 6px 4px;
   border-radius: 8px;
   text-align: center;
   cursor: pointer;
-  font-size: 0.9em;
 }
 .option.selected { border: 2px solid var(--lettuce); }
 .option.correct { background: var(--lettuce); color: #000; }
@@ -104,18 +103,25 @@ body {
   border-radius: 10px;
 }
 .nav-buttons button:hover { background: #333; }
-/* Larger screens: horizontal 4-option layout */
+
+/* Layout for options in test view on small screens */
+.test-view .option {
+  flex: 1 1 calc(38% - 8px); /* narrower width */
+  padding: 5px 4px; /* less height */
+  font-size: 0.85em;
+}
+/* On larger screens, 4 across in test view */
 @media (min-width: 701px) {
-  .option { flex: 1 1 calc(22% - 8px); }
+  .test-view .option { flex: 1 1 calc(22% - 8px); }
 }
 </style>
 </head>
-<body>
+<body class="menu-view">
 <div class="layer-2">
   <div class="header" id="header">
     <div class="main-title">AT A GLANCE</div>
     <div class="subtitle">Language Generator</div>
-    <div class="creator" id="creatorName" style="display:none;">Majid Nashtai</div>
+    <div class="creator" id="creatorName">Majid Nashtai</div>
   </div>
   <div class="menu" id="menu"></div>
   <div class="exercise-area" id="exerciseArea"></div>
@@ -123,8 +129,8 @@ body {
   <div class="score" id="score"></div>
   <div class="nav-buttons" id="navBtns">
     <button id="menuBtn">MENU</button>
-    <button onclick="repeatTest()">REPEAT</button>
-    <button onclick="nextTest()">NEXT</button>
+    <button id="repeatBtn" onclick="repeatTest()">REPEAT</button>
+    <button id="nextBtn" onclick="nextTest()">NEXT</button>
   </div>
 </div>
 <script>
@@ -432,23 +438,26 @@ const testGroups = [
 let currentTest = null;
 let selections = [];
 
-/* Initialise Menu View */
+/* Show Menu Page */
 function initMenu(){
+  document.body.classList.remove('test-view');
+  document.body.classList.add('menu-view');
+
   const menu = document.getElementById('menu');
   menu.style.display='grid';
   menu.innerHTML='';
   document.getElementById('exerciseArea').innerHTML='';
   document.getElementById('submitBtn').style.display='none';
   document.getElementById('score').style.display='none';
-  
-  // Hide the 3 nav buttons only in menu view
+
+  // Hide the nav buttons on menu page
   document.getElementById('menuBtn').style.display = 'none';
-  document.querySelector('#navBtns button[onclick="repeatTest()"]').style.display = 'none';
-  document.querySelector('#navBtns button[onclick="nextTest()"]').style.display = 'none';
-  
-  // Update header for menu page
+  document.getElementById('repeatBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'none';
+
+  // Show creator name only here
   document.getElementById('creatorName').style.display = 'block';
-  
+
   testGroups.forEach((g,i)=>{
     const btn = document.createElement('button');
     btn.textContent = `TEST ${i+1}`;
@@ -457,27 +466,33 @@ function initMenu(){
   });
 }
 
-/* Show specific test */
+/* Show a Test Page */
 function showTest(idx){
+  document.body.classList.remove('menu-view');
+  document.body.classList.add('test-view');
+
   currentTest = idx;
   selections = [];
-  
   const area = document.getElementById('exerciseArea');
   area.innerHTML='';
   document.getElementById('menu').style.display='none';
 
-  // Show the 3 nav buttons in test view
+  // Show nav buttons again
   document.getElementById('menuBtn').style.display = 'inline-block';
-  document.querySelector('#navBtns button[onclick="repeatTest()"]').style.display = 'inline-block';
-  document.querySelector('#navBtns button[onclick="nextTest()"]').style.display = 'inline-block';
-  
+  document.getElementById('repeatBtn').style.display = 'inline-block';
+  document.getElementById('nextBtn').style.display = 'inline-block';
+
+  // Hide creator name in tests
+  document.getElementById('creatorName').style.display = 'none';
+
   testGroups[idx].questions.forEach((q,qi)=>{
     const qBlock = document.createElement('div');
     qBlock.className = 'question-block';
     const qText = document.createElement('div');
     qText.textContent = `${qi+1}. ${q.q}`;
     qBlock.appendChild(qText);
-    
+
+    // shuffle options
     const shuffled = q.opts.map((opt,j)=>({opt,idx:j})).sort(()=>Math.random()-0.5);
     const optsDiv = document.createElement('div');
     optsDiv.className = 'options';
@@ -488,14 +503,16 @@ function showTest(idx){
       ob.onclick=()=>selectOption(qi,originalIdx,ob);
       optsDiv.appendChild(ob);
     });
+
     qBlock.appendChild(optsDiv);
     area.appendChild(qBlock);
   });
-  
+
   document.getElementById('submitBtn').style.display='block';
   document.getElementById('score').style.display='none';
 }
 
+/* Select Option */
 function selectOption(qi,oi,btn){
   selections[qi]=oi;
   const btns = btn.parentNode.querySelectorAll('.option');
@@ -503,6 +520,7 @@ function selectOption(qi,oi,btn){
   btn.classList.add('selected');
 }
 
+/* Grade the test */
 function submitAnswers(){
   let correct=0;
   const qBlocks = document.getElementsByClassName('question-block');
@@ -523,13 +541,15 @@ function submitAnswers(){
   document.getElementById('score').style.display='block';
 }
 
+/* Repeat and Next */
 function repeatTest(){ showTest(currentTest); }
 function nextTest(){ showTest((currentTest+1)%testGroups.length); }
 
+/* Events */
 document.getElementById('submitBtn').onclick=submitAnswers;
 document.getElementById('menuBtn').onclick=initMenu;
 
-/* Start in menu */
+/* Init */
 initMenu();
 </script>
 </body>
