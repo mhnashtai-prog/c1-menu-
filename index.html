@@ -18,47 +18,119 @@
   --body-font: 'Roboto', sans-serif;
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg-dark); font-family: var(--body-font); color: #fafafa;
-       display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-.layer-2 { background: var(--layer2); border-radius: 25px; max-width: 1000px; width: 94%; padding: 20px; }
-.header { text-align: center; }
+body {
+  margin: 0;
+  background: var(--bg-dark);
+  font-family: var(--body-font);
+  color: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+.layer-2 {
+  background: var(--layer2);
+  border-radius: 25px;
+  max-width: 1000px;
+  width: 94%;
+  padding: 20px;
+}
+.header { text-align: center; margin-bottom: 15px; }
 .main-title { font-size: 2em; font-family: var(--title-font); font-weight: 700; }
 .subtitle { font-size: 1em; color: #aaa; }
-.menu { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; }
-.menu button { background: var(--btn-light); border: none; color: #fff; padding: 10px 0;
-               border-radius: 10px; cursor: pointer; }
+.creator { font-size: 1em; color: #aaa; }
+.menu {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+.menu button {
+  background: var(--btn-light);
+  border: none;
+  color: #fff;
+  padding: 10px 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
 .menu button:hover { background: var(--btn-hover); }
-.exercise-area { max-height: 60vh; overflow-y: auto; padding-right: 10px; }
-.question-block { margin-bottom: 15px; }
-.options { display: flex; gap: 8px; flex-wrap: wrap; }
-.option { flex: 1 1 calc(50% - 8px); background: #444; border: none; color: #fff; padding: 10px;
-          border-radius: 8px; text-align: center; cursor: pointer; }
+.exercise-area {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+.question-block { margin-bottom: 20px; }
+.options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+/* Smaller option buttons for more black space */
+.option {
+  flex: 1 1 calc(45% - 8px); /* smaller width */
+  background: #444;
+  border: none;
+  color: #fff;
+  padding: 6px 4px; /* reduced height */
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.9em;
+}
 .option.selected { border: 2px solid var(--lettuce); }
 .option.correct { background: var(--lettuce); color: #000; }
 .option.wrong { background: var(--wrong); color: #900; }
-.submit-btn { display: block; margin: 15px auto; background: var(--lettuce);
-              border: none; padding: 10px 20px; font-family: var(--title-font); font-weight: 700;
-              cursor: pointer; border-radius: 15px; }
-.score { text-align: center; font-size: 1.2em; font-weight: 700; margin-top: 10px; display: none; }
-.nav-buttons { text-align: center; margin-top: 15px; }
-.nav-buttons button { background: #262626; border: none; color: #fff; padding: 8px 16px;
-                      margin: 0 5px; cursor: pointer; border-radius: 10px; }
+.submit-btn {
+  display: block;
+  margin: 15px auto;
+  background: var(--lettuce);
+  border: none;
+  padding: 10px 20px;
+  font-family: var(--title-font);
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 15px;
+}
+.score {
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 700;
+  margin-top: 10px;
+  display: none;
+}
+.nav-buttons {
+  text-align: center;
+  margin-top: 15px;
+}
+.nav-buttons button {
+  background: #262626;
+  border: none;
+  color: #fff;
+  padding: 8px 16px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 10px;
+}
 .nav-buttons button:hover { background: #333; }
-/* Larger screens: horizontal 4-option layout */
-@media (min-width: 701px) { .option { flex: 1 1 calc(25% - 8px); } }
+/* Larger screens: 4 in a row */
+@media (min-width: 701px) {
+  .option { flex: 1 1 calc(22% - 8px); }
+}
 </style>
 </head>
 <body>
 <div class="layer-2">
-  <div class="header">
+  <div class="header" id="header">
     <div class="main-title">AT A GLANCE</div>
     <div class="subtitle">Language Generator</div>
+    <div class="creator" id="creatorName" style="display:none;">Majid Nashtai</div>
   </div>
   <div class="menu" id="menu"></div>
   <div class="exercise-area" id="exerciseArea"></div>
   <button class="submit-btn" id="submitBtn" style="display:none;">SUBMIT</button>
   <div class="score" id="score"></div>
-  <div class="nav-buttons" id="navBtns">
+  <div class="nav-buttons" id="navBtns" style="display:none;">
     <button id="menuBtn">MENU</button>
     <button onclick="repeatTest()">REPEAT</button>
     <button onclick="nextTest()">NEXT</button>
@@ -367,12 +439,20 @@ const testGroups = [
 ];
 let currentTest = null;
 let selections = [];
+let inMenu = true; // track if we're in main menu
 
-/* ==== FUNCTIONS ==== */
 function initMenu(){
+  inMenu = true;
   const menu = document.getElementById('menu');
   menu.style.display='grid';
   menu.innerHTML='';
+  document.getElementById('exerciseArea').innerHTML='';
+  document.getElementById('submitBtn').style.display='none';
+  document.getElementById('score').style.display='none';
+  document.getElementById('navBtns').style.display='none';
+  // Change header for menu page
+  document.querySelector('.subtitle').textContent = 'Language Generator';
+  document.getElementById('creatorName').style.display = 'block';
   testGroups.forEach((g,i)=>{
     const btn = document.createElement('button');
     btn.textContent = `TEST ${i+1}`;
@@ -380,24 +460,21 @@ function initMenu(){
     menu.appendChild(btn);
   });
 }
-function showMenu(){
-  document.getElementById('menu').style.display='grid';
-  document.getElementById('exerciseArea').innerHTML='';
-  document.getElementById('submitBtn').style.display='none';
-  document.getElementById('score').style.display='none';
-}
+
 function showTest(idx){
+  inMenu = false;
   currentTest = idx;
   selections = [];
   const area = document.getElementById('exerciseArea');
   area.innerHTML='';
+  const menu = document.getElementById('menu');
+  menu.style.display='none';
   testGroups[idx].questions.forEach((q,qi)=>{
     const qBlock = document.createElement('div');
     qBlock.className = 'question-block';
     const qText = document.createElement('div');
     qText.textContent = `${qi+1}. ${q.q}`;
     qBlock.appendChild(qText);
-
     const shuffled = q.opts.map((opt,j)=>({opt,idx:j})).sort(()=>Math.random()-0.5);
     const optsDiv = document.createElement('div');
     optsDiv.className = 'options';
@@ -408,49 +485,15 @@ function showTest(idx){
       ob.onclick=()=>selectOption(qi,originalIdx,ob);
       optsDiv.appendChild(ob);
     });
-
     qBlock.appendChild(optsDiv);
     area.appendChild(qBlock);
   });
-  document.getElementById('menu').style.display='none';
   document.getElementById('submitBtn').style.display='block';
   document.getElementById('score').style.display='none';
+  document.getElementById('navBtns').style.display='block';
+  // Restore original header for test pages
+  document.querySelector('.subtitle').textContent = 'Language Generator';
+  document.getElementById('creatorName').style.display = 'none';
 }
-function selectOption(qi,oi,btn){
-  selections[qi]=oi;
-  const btns = btn.parentNode.querySelectorAll('.option');
-  btns.forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
-}
-function submitAnswers(){
-  let correct=0;
-  const qBlocks = document.getElementsByClassName('question-block');
-  testGroups[currentTest].questions.forEach((q,qi)=>{
-    const btns = qBlocks[qi].querySelectorAll('.option');
-    btns.forEach(b=>{
-      const correctOpt = q.opts[q.ans];
-      if(b.textContent===correctOpt) b.classList.add('correct');
-      if(selections[qi]!==undefined && b.textContent===q.opts[selections[qi]] && b.textContent!==correctOpt){
-        b.classList.add('wrong');
-      }
-      b.disabled=true;
-    });
-    if(selections[qi]!==undefined && q.opts[selections[qi]]===q.opts[q.ans]) correct++;
-  });
-  document.getElementById('score').textContent =
-    `Score: ${correct}/${testGroups[currentTest].questions.length} (${Math.round(correct/testGroups[currentTest].questions.length*100)}%)`;
-  document.getElementById('score').style.display='block';
-}
-function repeatTest(){ showTest(currentTest); }
-function nextTest(){ showTest((currentTest+1)%testGroups.length); }
 
-/* ==== EVENTS ==== */
-document.getElementById('submitBtn').onclick=submitAnswers;
-document.getElementById('menuBtn').onclick=showMenu;
-
-/* ==== INIT ==== */
-initMenu();
-</script>
-</body>
-</html>
 
