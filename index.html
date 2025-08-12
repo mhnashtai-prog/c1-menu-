@@ -6,7 +6,158 @@
 <title>AT A GLANCE – C1 Advanced Language Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* --- [Styles omitted for brevity; use exactly from last improved version] --- */
+:root {
+  --bg-dark: #141414;
+  --layer2: #212124;
+  --layer3: #33323a;
+  --btn-light: #454653;
+  --btn-hover: #55586a;
+  --lettuce: #7ed957;
+  --wrong: #ffcccc;
+  --title-font: 'Montserrat', sans-serif;
+  --body-font: 'Roboto', sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg-dark);
+  font-family: var(--body-font);
+  color: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+.layer-1 {
+  background: var(--bg-dark);
+  width: 100%;
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.layer-2 {
+  background: var(--layer2);
+  border-radius: 25px;
+  max-width: 1000px;
+  width: 94%;
+  padding: 20px;
+}
+.header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+.main-title {
+  font-size: 2.8em;
+  font-family: var(--title-font);
+  font-weight: 700;
+}
+.subtitle {
+  font-size: 1.25em;
+  color: #aaa;
+}
+.creator {
+  font-size: 1em;
+  color: #aaa;
+}
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 20px 0 30px;
+}
+.menu button {
+  background: var(--btn-light);
+  border: none;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-family: var(--title-font);
+  font-size: 0.95em;
+  cursor: pointer;
+}
+.menu button:hover {
+  background: var(--btn-hover);
+}
+.exercise-area {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+.exercise-area::-webkit-scrollbar {
+  width: 6px;
+}
+.exercise-area::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 3px;
+}
+.question-block {
+  margin-bottom: 20px;
+}
+.question-text {
+  margin-bottom: 10px;
+}
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.option {
+  background: #444;
+  border: none;
+  color: #fff;
+  padding: 8px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+.option.selected {
+  border: 2px solid var(--lettuce);
+}
+.option.correct {
+  background: var(--lettuce);
+  color: #000;
+}
+.option.wrong {
+  background: var(--wrong);
+  color: #900;
+}
+.submit-btn {
+  display: block;
+  margin: 15px auto;
+  background: var(--lettuce);
+  border: none;
+  padding: 10px 20px;
+  font-family: var(--title-font);
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 15px;
+}
+.score {
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 700;
+  margin-top: 10px;
+  display: none;
+}
+.nav-buttons {
+  text-align: center;
+  margin-top: 15px;
+  display: none;
+}
+.nav-buttons button {
+  background: #262626;
+  border: none;
+  color: #fff;
+  padding: 8px 16px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+.nav-buttons button:hover {
+  background: #333;
+}
 </style>
 </head>
 <body>
@@ -29,34 +180,34 @@
   </div>
 </div>
 <script>
-const testGroups = [
-/* ========= GROUP 1: Similar Words ========= */
-{ title:"Similar Words", questions:[
-  {q:"The lecture was so _____ that most students lost interest quickly.", opts:["dull","dim","weak","faint"], ans:0},
-  {q:"Her remarks were intended to be _____, not offensive.", opts:["complimentary","complementary","commentary","commendable"], ans:0},
-  {q:"The evidence was _____ enough to convince the jury.", opts:["substantial","sustainable","substitute","subjective"], ans:0},
-  {q:"I have an _____ memory of visiting this place.", opts:["indelible","indescribable","indivisible","inelastic"], ans:0},
-  {q:"We need a leader who is both strong and _____.", opts:["compassionate","compatible","comparative","composed"], ans:0},
-  {q:"His response was _____ and avoided the real issue.", opts:["evasive","elusive","elated","evident"], ans:0},
-  {q:"She felt a deep sense of _____ on hearing the news.", opts:["foreboding","foregoing","forefront","forebear"], ans:0},
-  {q:"He gave a _____ description of the suspect to the police.", opts:["vivid","vital","void","vile"], ans:0},
-  {q:"The film was praised for its _____ humour.", opts:["witty","wary","weary","watery"], ans:0},
-  {q:"After hours of debate, they reached an _____ decision.", opts:["amicable","amiable","amorphous","ample"], ans:0},
-  {q:"This diet is not _____ for young children.", opts:["suitable","susceptible","sustained","subtle"], ans:0},
-  {q:"The company experienced _____ growth last year.", opts:["steady","stealthy","sturdy","stark"], ans:0},
-  {q:"His handwriting is barely _____.", opts:["legible","legal","legion","legend"], ans:0},
-  {q:"The artist's style is highly _____.", opts:["distinctive","distinct","distinguished","distant"], ans:0},
-  {q:"The politician gave a _____ reply to the journalist's question.", opts:["candid","candied","candidate","canopy"], ans:0},
-  {q:"This substance is highly _____ to heat.", opts:["resistant","resilient","reliant","reticent"], ans:0},
-  {q:"His explanation was _____ and easy to understand.", opts:["lucid","lurid","lucky","lumpy"], ans:0},
-  {q:"The design is both functional and _____.", opts:["aesthetic","ascetic","athletic","aphetic"], ans:0},
-  {q:"Her story was entirely _____.", opts:["fictitious","fictional","factious","fractious"], ans:0},
-  {q:"He has an _____ sense of humour.", opts:["irreverent","irrelevant","irresponsible","irregular"], ans:0},
-  {q:"The two versions are _____ different.", opts:["radically","radially","readily","rigidly"], ans:0},
-  {q:"She is _____ to headaches.", opts:["prone","prime","proof","prompt"], ans:0},
-  {q:"The meeting was _____ to discuss the budget.", opts:["convened","converged","conveyed","conceded"], ans:0},
-  {q:"Their comments were _____ but unhelpful.", opts:["pertinent","persistent","permanent","perilous"], ans:0},
-  {q:"The mountains were barely _____ through the mist.", opts:["visible","visionary","viscous","vivid"], ans:0}
+{ title:"Mixed Advanced Practice – Group 1", questions:[
+  {q:"The lecture was so _____ that most students lost interest quickly.", opts:["dull","tedious","boring","monotonous"], ans:0},
+  {q:"She accepted the job offer without _____ hesitation.", opts:["any","much","some","little"], ans:0},
+  {q:"The manager was very _____ to his staff’s concerns.", opts:["receptive","perceptive","responsive","sensitive"], ans:0},
+  {q:"The client made some _____ remarks about the project.", opts:["critical","crucial","critic","criticised"], ans:0},
+  {q:"Her style is quite _____ compared to her colleagues.", opts:["distinct","different","distinguished","distinctive"], ans:0},
+  {q:"The results showed a _____ improvement in performance.", opts:["marked","noticeable","obvious","clear"], ans:0},
+  {q:"They were _____ to finish the work by Friday.", opts:["eager","keen","willing","ready"], ans:0},
+  {q:"Despite the problems, the plan remains _____.", opts:["viable","vivid","vital","valid"], ans:0},
+  {q:"The witness gave a _____ account of the incident.", opts:["detailed","detailing","detained","distinct"], ans:0},
+  {q:"Our company is _____ to change in the near future.", opts:["likely","liable","possible","apt"], ans:0},
+  {q:"He made a _____ contribution to the debate.", opts:["valuable","valid","valued","valuing"], ans:0},
+  {q:"Their idea is not economically _____.", opts:["feasible","possible","practical","probable"], ans:0},
+  {q:"The museum houses an _____ collection of art.", opts:["extensive","extended","expansive","expanded"], ans:0},
+  {q:"This problem is _____ to everyone in the community.", opts:["relevant","relative","related","relating"], ans:0},
+  {q:"The policy was criticised for being socially _____.", opts:["unjust","unjustice","unjustified","justice"], ans:0},
+
+  // Grammar / Other (Q16–25)
+  {q:"If I _____ enough money, I would travel the world.", opts:["had","have","had had","will have"], ans:0},
+  {q:"She denied _____ to the meeting.", opts:["going","go","to go","gone"], ans:0},
+  {q:"No sooner _____ the light turned green than they drove off.", opts:["had","was","has","did"], ans:0},
+  {q:"We had to call _____ the trip because of bad weather.", opts:["off","out","up","away"], ans:0},
+  {q:"He insisted _____ paying for the damage.", opts:["on","in","to","for"], ans:0},
+  {q:"By next week, we _____ the project.", opts:["will have finished","finish","finished","finishing"], ans:0},
+  {q:"I wish I _____ more time to relax.", opts:["had","have","will have","am having"], ans:0},
+  {q:"She’s capable _____ solving complex problems.", opts:["of","to","in","at"], ans:0},
+  {q:"Hardly a day goes by _____ I don’t think about the trip.", opts:["when","where","that","which"], ans:0},
+  {q:"The teacher told us that the exam _____ postponed.", opts:["was","is","be","will be"], ans:0}
 ]},
 { title:"Mixed Advanced Practice – Group 2", questions:[
   {q:"I’m not really accustomed _____ speaking in front of large audiences.", opts:["to","with","at","for"], ans:0},
@@ -74,6 +225,8 @@ const testGroups = [
   {q:"By the time the exam starts, you _____ all the necessary revision.", opts:["will have done","will do","have done","had done"], ans:0},
   {q:"He accused me _____ breaking the agreement.", opts:["of","for","about","on"], ans:0},
   {q:"The book is said _____ into several languages already.", opts:["to have been translated","to translate","to be translated","being translated"], ans:0},
+
+  // ==== Q16–Q25: Mixed Advanced Grammar / Other Focus ====
   {q:"No sooner had I sat down to relax _____ the phone rang.", opts:["than","when","but","and"], ans:0},
   {q:"She speaks Spanish fluently, but her Italian is still a bit _____.", opts:["rusty","blunt","dim","weak"], ans:0},
   {q:"His performance fell short of our expectations, _____ the effort he had put in.", opts:["despite","because","in case","owing to"], ans:0},
@@ -325,6 +478,16 @@ const testGroups = [
   {q:"The suspects are believed _____ abroad last night.", opts:["to have fled","to flee","to fled","fleeing"], ans:0},
   {q:"Hardly a week goes by _____ I don’t hear from her.", opts:["when","that","where","which"], ans:0}
 ]},
+  { title:"Adjective & Adverb Collocations",questions:[]},
+  { title:"Verb + Preposition Collocations",questions:[]},
+  { title:"Linking Words (Advanced)",questions:[]},
+  { title:"Fixed Expressions",questions:[]},
+  { title:"Phrasal Verbs",questions:[]},
+  { title:"Conditionals & Wishes",questions:[]},
+  { title:"Gerunds & Infinitives",questions:[]},
+  { title:"Reporting Verbs",questions:[]},
+  { title:"Complex Passive Structures",questions:[]}
+];
 let currentTest = null;
 let selections = [];
 
