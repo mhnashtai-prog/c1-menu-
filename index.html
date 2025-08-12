@@ -67,18 +67,18 @@ body {
 .question-block { margin-bottom: 20px; }
 .options {
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
-  justify-content: flex-start; /* left align */
+  justify-content: space-between; /* spread buttons to max distance */
+  gap: 0; /* let space-between control spacing */
 }
 .option {
-  background: #444;
+  background: #4b4b4b; /* ~5% lighter than #444 */
   border: none;
   color: #fff;
   border-radius: 8px;
   text-align: center;
   cursor: pointer;
-  white-space: nowrap; /* prevent word wrap inside button */
+  white-space: nowrap;
 }
 .option.selected { border: 2px solid var(--lettuce); }
 .option.correct { background: var(--lettuce); color: #000; }
@@ -132,7 +132,6 @@ body {
     <button id="nextBtn" onclick="nextTest()">NEXT</button>
   </div>
 </div>
-
 
 <script>
 const testGroups = [
@@ -448,11 +447,9 @@ function initMenu(){
   document.getElementById('exerciseArea').innerHTML='';
   document.getElementById('submitBtn').style.display='none';
   document.getElementById('score').style.display='none';
-  // Hide nav buttons
   document.getElementById('menuBtn').style.display = 'none';
   document.getElementById('repeatBtn').style.display = 'none';
   document.getElementById('nextBtn').style.display = 'none';
-  // Show creator name, hide test number
   document.getElementById('creatorName').style.display = 'block';
   document.getElementById('testNumber').style.display = 'none';
   testGroups.forEach((g,i)=>{
@@ -471,15 +468,12 @@ function showTest(idx){
   const area = document.getElementById('exerciseArea');
   area.innerHTML='';
   document.getElementById('menu').style.display='none';
-  // Show nav buttons
   document.getElementById('menuBtn').style.display = 'inline-block';
   document.getElementById('repeatBtn').style.display = 'inline-block';
   document.getElementById('nextBtn').style.display = 'inline-block';
-  // Hide creator, show test number
   document.getElementById('creatorName').style.display = 'none';
   document.getElementById('testNumber').textContent = `TEST ${idx+1}`;
   document.getElementById('testNumber').style.display = 'block';
-  // Build questions
   testGroups[idx].questions.forEach((q,qi)=>{
     const qBlock = document.createElement('div');
     qBlock.className = 'question-block';
@@ -501,14 +495,14 @@ function showTest(idx){
   });
   document.getElementById('submitBtn').style.display='block';
   document.getElementById('score').style.display='none';
-  adjustOptionWidths(); // adjust width to word length + 10%
+  adjustOptionWidths();
 }
 
 function adjustOptionWidths(){
   document.querySelectorAll('.option').forEach(btn=>{
-    btn.style.width = 'auto'; // reset
-    const baseWidth = btn.scrollWidth; // natural width in px
-    btn.style.width = (baseWidth * 1.10) + 'px'; // +10%
+    btn.style.width = 'auto';
+    const baseWidth = btn.scrollWidth;
+    btn.style.width = (baseWidth * 1.10) + 'px';
   });
 }
 
@@ -545,7 +539,6 @@ function nextTest(){ showTest((currentTest+1)%testGroups.length); }
 document.getElementById('submitBtn').onclick=submitAnswers;
 document.getElementById('menuBtn').onclick=initMenu;
 
-// Init
 initMenu();
 </script>
 </body>
