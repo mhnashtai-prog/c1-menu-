@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +10,6 @@
 :root {
   --bg-dark: #141414;
   --layer2: #212124;
-  --layer3: #33323a;
   --btn-light: #454653;
   --btn-hover: #55586a;
   --lettuce: #7ed957;
@@ -18,165 +18,50 @@
   --body-font: 'Roboto', sans-serif;
 }
 * { box-sizing: border-box; }
-body {
-  margin: 0;
-  background: var(--bg-dark);
-  font-family: var(--body-font);
-  color: #fafafa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
-.layer-1 {
-  background: var(--bg-dark);
-  width: 100%;
-  padding: 10px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.layer-2 {
-  background: var(--layer2);
-  border-radius: 25px;
-  max-width: 1000px;
-  width: 94%;
-  padding: 20px;
-}
-.header {
-  text-align: center;
-  margin-bottom: 25px;
-}
-.main-title {
-  font-size: 2.8em;
-  font-family: var(--title-font);
-  font-weight: 700;
-}
-.subtitle {
-  font-size: 1.25em;
-  color: #aaa;
-}
-.creator {
-  font-size: 1em;
-  color: #aaa;
-}
-.menu {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  margin: 20px 0 30px;
-}
-.menu button {
-  background: var(--btn-light);
-  border: none;
-  color: #fff;
-  padding: 10px 18px;
-  border-radius: 10px;
-  font-family: var(--title-font);
-  font-size: 0.95em;
-  cursor: pointer;
-}
-.menu button:hover {
-  background: var(--btn-hover);
-}
-.exercise-area {
-  max-height: 60vh;
-  overflow-y: auto;
-  padding-right: 10px;
-}
-.exercise-area::-webkit-scrollbar {
-  width: 6px;
-}
-.exercise-area::-webkit-scrollbar-thumb {
-  background: #666;
-  border-radius: 3px;
-}
-.question-block {
-  margin-bottom: 20px;
-}
-.question-text {
-  margin-bottom: 10px;
-}
-.options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.option {
-  background: #444;
-  border: none;
-  color: #fff;
-  padding: 8px;
-  border-radius: 8px;
-  text-align: center;
-  cursor: pointer;
-}
-.option.selected {
-  border: 2px solid var(--lettuce);
-}
-.option.correct {
-  background: var(--lettuce);
-  color: #000;
-}
-.option.wrong {
-  background: var(--wrong);
-  color: #900;
-}
-.submit-btn {
-  display: block;
-  margin: 15px auto;
-  background: var(--lettuce);
-  border: none;
-  padding: 10px 20px;
-  font-family: var(--title-font);
-  font-weight: 700;
-  cursor: pointer;
-  border-radius: 15px;
-}
-.score {
-  text-align: center;
-  font-size: 1.2em;
-  font-weight: 700;
-  margin-top: 10px;
-  display: none;
-}
-.nav-buttons {
-  text-align: center;
-  margin-top: 15px;
-  display: none;
-}
-.nav-buttons button {
-  background: #262626;
-  border: none;
-  color: #fff;
-  padding: 8px 16px;
-  margin: 0 5px;
-  cursor: pointer;
-  border-radius: 10px;
-}
-.nav-buttons button:hover {
-  background: #333;
-}
+body { margin: 0; background: var(--bg-dark); font-family: var(--body-font); color: #fafafa;
+       display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+.layer-2 { background: var(--layer2); border-radius: 25px; max-width: 1000px; width: 94%; padding: 20px; }
+.header { text-align: center; }
+.main-title { font-size: 2em; font-family: var(--title-font); font-weight: 700; }
+.subtitle { font-size: 1em; color: #aaa; }
+.menu { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; }
+.menu button { background: var(--btn-light); border: none; color: #fff; padding: 10px 0;
+               border-radius: 10px; cursor: pointer; }
+.menu button:hover { background: var(--btn-hover); }
+.exercise-area { max-height: 60vh; overflow-y: auto; padding-right: 10px; }
+.question-block { margin-bottom: 15px; }
+.options { display: flex; gap: 8px; flex-wrap: wrap; }
+.option { flex: 1 1 calc(50% - 8px); background: #444; border: none; color: #fff; padding: 10px;
+          border-radius: 8px; text-align: center; cursor: pointer; }
+.option.selected { border: 2px solid var(--lettuce); }
+.option.correct { background: var(--lettuce); color: #000; }
+.option.wrong { background: var(--wrong); color: #900; }
+.submit-btn { display: block; margin: 15px auto; background: var(--lettuce);
+              border: none; padding: 10px 20px; font-family: var(--title-font); font-weight: 700;
+              cursor: pointer; border-radius: 15px; }
+.score { text-align: center; font-size: 1.2em; font-weight: 700; margin-top: 10px; display: none; }
+.nav-buttons { text-align: center; margin-top: 15px; }
+.nav-buttons button { background: #262626; border: none; color: #fff; padding: 8px 16px;
+                      margin: 0 5px; cursor: pointer; border-radius: 10px; }
+.nav-buttons button:hover { background: #333; }
+/* Larger screens: horizontal 4-option layout */
+@media (min-width: 701px) { .option { flex: 1 1 calc(25% - 8px); } }
 </style>
 </head>
 <body>
-<div class="layer-1">
-  <div class="layer-2">
-    <div class="header">
-      <div class="main-title">AT A GLANCE</div>
-      <div class="subtitle">Language Generator</div>
-      <div class="creator">by Majid Nashtai</div>
-    </div>
-    <div class="menu" id="menu"></div>
-    <div class="exercise-area" id="exerciseArea"></div>
-    <button class="submit-btn" id="submitBtn" style="display:none;">SUBMIT</button>
-    <div class="score" id="score"></div>
-    <div class="nav-buttons" id="navBtns">
-      <button onclick="showMenu()">MENU</button>
-      <button onclick="repeatTest()">REPEAT</button>
-      <button onclick="nextTest()">NEXT</button>
-    </div>
+<div class="layer-2">
+  <div class="header">
+    <div class="main-title">AT A GLANCE</div>
+    <div class="subtitle">Language Generator</div>
+  </div>
+  <div class="menu" id="menu"></div>
+  <div class="exercise-area" id="exerciseArea"></div>
+  <button class="submit-btn" id="submitBtn" style="display:none;">SUBMIT</button>
+  <div class="score" id="score"></div>
+  <div class="nav-buttons" id="navBtns">
+    <button id="menuBtn">MENU</button>
+    <button onclick="repeatTest()">REPEAT</button>
+    <button onclick="nextTest()">NEXT</button>
   </div>
 </div>
 <script>
@@ -483,9 +368,10 @@ const testGroups = [
 let currentTest = null;
 let selections = [];
 
-
+/* ==== FUNCTIONS ==== */
 function initMenu(){
   const menu = document.getElementById('menu');
+  menu.style.display='grid';
   menu.innerHTML='';
   testGroups.forEach((g,i)=>{
     const btn = document.createElement('button');
@@ -495,11 +381,10 @@ function initMenu(){
   });
 }
 function showMenu(){
-  document.getElementById('menu').style.display='flex';
+  document.getElementById('menu').style.display='grid';
   document.getElementById('exerciseArea').innerHTML='';
   document.getElementById('submitBtn').style.display='none';
   document.getElementById('score').style.display='none';
-  document.getElementById('navBtns').style.display='none';
 }
 function showTest(idx){
   currentTest = idx;
@@ -507,67 +392,65 @@ function showTest(idx){
   const area = document.getElementById('exerciseArea');
   area.innerHTML='';
   testGroups[idx].questions.forEach((q,qi)=>{
-    const qb = document.createElement('div');
-    qb.className = 'question-block';
-    const qt = document.createElement('div');
-    qt.className='question-text';
-    qt.textContent = `${qi+1}. ${q.q}`;
-    qb.appendChild(qt);
+    const qBlock = document.createElement('div');
+    qBlock.className = 'question-block';
+    const qText = document.createElement('div');
+    qText.textContent = `${qi+1}. ${q.q}`;
+    qBlock.appendChild(qText);
+
+    const shuffled = q.opts.map((opt,j)=>({opt,idx:j})).sort(()=>Math.random()-0.5);
     const optsDiv = document.createElement('div');
-    optsDiv.className='options';
-    q.opts.forEach((opt,oi)=>{
+    optsDiv.className = 'options';
+    shuffled.forEach(({opt,idx:originalIdx})=>{
       const ob = document.createElement('button');
       ob.className='option';
-      ob.textContent=opt;
-      ob.onclick=()=>selectOption(qi,oi);
+      ob.textContent = opt;
+      ob.onclick=()=>selectOption(qi,originalIdx,ob);
       optsDiv.appendChild(ob);
     });
-    qb.appendChild(optsDiv);
-    area.appendChild(qb);
+
+    qBlock.appendChild(optsDiv);
+    area.appendChild(qBlock);
   });
   document.getElementById('menu').style.display='none';
   document.getElementById('submitBtn').style.display='block';
   document.getElementById('score').style.display='none';
-  document.getElementById('navBtns').style.display='none';
 }
-function selectOption(qi,oi){
+function selectOption(qi,oi,btn){
   selections[qi]=oi;
-  const questionBlock = document.getElementsByClassName('question-block')[qi];
-  const buttons = questionBlock.querySelectorAll('.option');
-  buttons.forEach((b,bi)=>{
-    b.classList.toggle('selected',bi===oi);
-  });
+  const btns = btn.parentNode.querySelectorAll('.option');
+  btns.forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
 }
 function submitAnswers(){
   let correct=0;
-  const questionBlocks = document.getElementsByClassName('question-block');
+  const qBlocks = document.getElementsByClassName('question-block');
   testGroups[currentTest].questions.forEach((q,qi)=>{
-    const buttons = questionBlocks[qi].querySelectorAll('.option');
-    buttons.forEach((b,bi)=>{
-      if(bi===q.ans){
-        b.classList.add('correct');
-      }
-      if(selections[qi]===bi && bi!==q.ans){
+    const btns = qBlocks[qi].querySelectorAll('.option');
+    btns.forEach(b=>{
+      const correctOpt = q.opts[q.ans];
+      if(b.textContent===correctOpt) b.classList.add('correct');
+      if(selections[qi]!==undefined && b.textContent===q.opts[selections[qi]] && b.textContent!==correctOpt){
         b.classList.add('wrong');
       }
       b.disabled=true;
     });
-    if(selections[qi]===q.ans) correct++;
+    if(selections[qi]!==undefined && q.opts[selections[qi]]===q.opts[q.ans]) correct++;
   });
-  const scoreText = `Score: ${correct}/${testGroups[currentTest].questions.length} (${Math.round(correct/testGroups[currentTest].questions.length*100)}%)`;
-  document.getElementById('score').textContent = scoreText;
+  document.getElementById('score').textContent =
+    `Score: ${correct}/${testGroups[currentTest].questions.length} (${Math.round(correct/testGroups[currentTest].questions.length*100)}%)`;
   document.getElementById('score').style.display='block';
-  document.getElementById('navBtns').style.display='block';
 }
-function repeatTest(){
-  showTest(currentTest);
-}
-function nextTest(){
-  let n = (currentTest+1)%testGroups.length;
-  showTest(n);
-}
+function repeatTest(){ showTest(currentTest); }
+function nextTest(){ showTest((currentTest+1)%testGroups.length); }
+
+/* ==== EVENTS ==== */
 document.getElementById('submitBtn').onclick=submitAnswers;
+document.getElementById('menuBtn').onclick=showMenu;
+
+/* ==== INIT ==== */
 initMenu();
 </script>
 </body>
 </html>
+
